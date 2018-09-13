@@ -85,13 +85,15 @@ func (l *Loader) walkDirectoryCallback(path string, info os.FileInfo, err error)
 	if err != nil {
 		l.stats.loadFailures.Inc()
 		logger.Warnf("runtime: error processing %s: %s", path, err)
-		if info.IsDir() && strings.HasPrefix(info.Name(), ".") {
-			return filepath.SkipDir
-		}
+
 		return nil
 	}
 
 	logger.Debugf("runtime: processing %s", path)
+	if info.IsDir() && strings.HasPrefix(info.Name(), ".") {
+		return filepath.SkipDir
+	}
+
 	if !info.IsDir() {
 		if strings.HasPrefix(info.Name(), ".") {
 			return nil
